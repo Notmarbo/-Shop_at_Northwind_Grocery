@@ -17,10 +17,11 @@ window.onload = () => {
     populateCategorySelect();
     hideCatSelectRow();
     hideListOfItems();
-    searchBySelect.addEventListener("change", onSearchBySelectChange)
-    categorySelect.addEventListener("change", onCategorySelectChange)
+    searchBySelect.onchange = onSearchBySelectChange;
+    categorySelect.onchange = onCategorySelectChange;
 }
 function populateSearchBy() {
+    //NEXT TIME PUT THIS IN HTML
     let initalOption = new Option("Please Select A Search Option", "0");
     searchBySelect.appendChild(initalOption);
     let secondOption = new Option("Search By Category", "1");
@@ -37,7 +38,7 @@ function populateCategorySelect() {
 
                 let option = document.createElement("option");
                 option.text = category.name;
-                option.value = category.id;
+                option.value = category.categoryId;
 
                 categorySelect.appendChild(option);
             }
@@ -46,28 +47,98 @@ function populateCategorySelect() {
     categorySelect.appendChild(initalOption);
 }
 function onSearchBySelectChange() {
+
     hideListOfItems();
     let searchBySelected = searchBySelect.value;
 
-    if(searchBySelected == 1){
+    if (searchBySelected == 1) {
         showCatSelectRow();
-    }else if(searchBySelected == 2){
+    } else if (searchBySelected == 2) {
         showListOfItems();
         hideCatSelectRow();
         fetch("http://localhost:8081/api/products")
             .then(response => response.json())
-            .then(products =>{
-                for(let product of products){
-                    console.log(product)
+            .then(products => {
+                for (let product of products) {
+                    makeProductTable(product)
                 }
             })
     }
 }
 function onCategorySelectChange() {
 
+    let categorySelected = categorySelect.value;
+    console.log(categorySelected)
+
+    fetch("http://localhost:8081/api/products")
+        .then(response => response.json())
+        .then(products => {
+            for (let product of products) {
+                if (categorySelected == product.categoryId) {
+
+                    //Make Table Content
+                    showListOfItems();
+                    makeProductTable(product);
+                }
+                else {
+                    console.log("We didnt Find a match ;(")
+                }
+
+            }
+        })
 }
 
+function makeProductTable(product) {
 
+    let cardDiv = document.createElement("div");
+    cardDiv.className = "card container";
+    cardDiv.style.width = "18rem";
+
+
+    let cardBodyDiv = document.createElement("div");
+    cardBodyDiv.className = "card-body";
+
+
+    let cardTitle = document.createElement("h5");
+    cardTitle.className = "card-title";
+    cardTitle.textContent = product.productName;
+
+    let paragraph = document.createElement("p");
+    paragraph.className = "card-text";
+    paragraph.textContent = `Price: ${product.unitPrice}`;
+
+    let paragraph2 = document.createElement("p");
+    paragraph2.className = "card-text";
+    paragraph2.textContent = `Supplier: ${product.supplier}`;
+
+
+    let link = document.createElement("a");
+    link.href = "#";
+    link.className = "btn btn-primary";
+    link.textContent = "Add to cart";
+
+    let link2 = document.createElement("a");
+    link2.href = "#";
+    link2.className = "btn btn-dark";
+    link2.textContent = "View Product";
+
+
+    cardBodyDiv.appendChild(cardTitle);
+    cardBodyDiv.appendChild(paragraph);
+    cardBodyDiv.appendChild(paragraph2);
+    cardBodyDiv.appendChild(link);
+    cardBodyDiv.appendChild(link2);
+
+
+    cardDiv.appendChild(cardBodyDiv);
+
+
+    let listOfItemsDiv = document.getElementById("listOfItems");
+
+    listOfItemsDiv.appendChild(cardDiv);
+
+
+}
 
 
 
