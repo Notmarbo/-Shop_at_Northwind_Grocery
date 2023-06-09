@@ -22,7 +22,8 @@ window.onload = () => {
 }
 function populateSearchBy() {
     //NEXT TIME PUT THIS IN HTML
-    let initalOption = new Option("Please Select A Search Option", "0");
+
+    let initalOption = new Option("Please Select A Search Option", "");
     searchBySelect.appendChild(initalOption);
     let secondOption = new Option("Search By Category", "1");
     searchBySelect.appendChild(secondOption);
@@ -31,6 +32,10 @@ function populateSearchBy() {
 }
 
 function populateCategorySelect() {
+  
+    let initalOption = new Option("Please Select A Category", "");
+    categorySelect.appendChild(initalOption);
+
     fetch("http://localhost:8081/api/categories")
         .then(response => response.json())
         .then(categories => {
@@ -43,10 +48,9 @@ function populateCategorySelect() {
                 categorySelect.appendChild(option);
             }
         });
-    let initalOption = new Option("Please Select A Category", "");
-    categorySelect.appendChild(initalOption);
 }
 function onSearchBySelectChange() {
+    listOfItems.innerHTML = ""
 
     hideListOfItems();
     let searchBySelected = searchBySelect.value;
@@ -66,6 +70,7 @@ function onSearchBySelectChange() {
     }
 }
 function onCategorySelectChange() {
+    listOfItems.innerHTML = ""
 
     let categorySelected = categorySelect.value;
     console.log(categorySelected)
@@ -80,9 +85,7 @@ function onCategorySelectChange() {
                     showListOfItems();
                     makeProductTable(product);
                 }
-                else {
-                    console.log("We didnt Find a match ;(")
-                }
+              
 
             }
         })
