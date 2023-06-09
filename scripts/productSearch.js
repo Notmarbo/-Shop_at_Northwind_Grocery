@@ -4,9 +4,6 @@
 const searchBySelect = document.getElementById("searchBySelect");
 const categorySelect = document.getElementById("categorySelect");
 
-
-
-
 const catSelectRow = document.getElementById("catSelectRow");
 const listOfItems = document.getElementById("listOfItems");
 
@@ -64,7 +61,7 @@ function onSearchBySelectChange() {
             .then(response => response.json())
             .then(products => {
                 for (let product of products) {
-                    makeProductTable(product)
+                    createProductRow(product)
                 }
             })
     }
@@ -75,23 +72,20 @@ function onCategorySelectChange() {
     let categorySelected = categorySelect.value;
     console.log(categorySelected)
 
-    fetch("http://localhost:8081/api/products")
+    fetch("http://localhost:8081/api/categories/" + categorySelected)
         .then(response => response.json())
         .then(products => {
             for (let product of products) {
-                if (categorySelected == product.categoryId) {
-
-                    //Make Table Content
-                    showListOfItems();
-                    makeProductTable(product);
-                }
+                showListOfItems();
+                createProductRow(product);
+           
               
 
             }
         })
 }
 
-function makeProductTable(product) {
+function createProductRow(product) {
 
     let cardDiv = document.createElement("div");
     cardDiv.className = "card container";
@@ -121,7 +115,7 @@ function makeProductTable(product) {
     link.textContent = "Add to cart";
 
     let link2 = document.createElement("a");
-    link2.href = "#";
+    link2.href = `productDetail.html?productId=${product.productId}`;
     link2.className = "btn btn-dark";
     link2.textContent = "View Product";
 
